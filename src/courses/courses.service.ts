@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from './courses.entity';
-import { Repository } from 'typeorm';
+import { Between, Like, Repository } from 'typeorm';
 import { CreateCourseDto } from './dtos/create-course.dto';
 import { updateCourseDto } from './dtos/update-course.dto';
 
@@ -16,8 +16,12 @@ export class CourseService {
    * Get all courses
    * @returns collection of products  
    */
-  async findAll() {
-    return await this.coursesRepository.find();
+  async findAll(title?: string , maxPrice?: string , minPrice?: string) {
+    const filters = {
+      ...(title ? {title: Like(`%${title.toLowerCase()}%`)} : {}),
+      ...(minPrice && maxPrice ? {price : Between(parseInt(minPrice), parseInt(maxPrice))} : {} ) 
+    }
+    return await this.coursesRepository.find({where: filters});
   }
 
   /**

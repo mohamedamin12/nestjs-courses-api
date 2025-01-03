@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { CourseService } from './courses.service';
 import { CreateCourseDto } from './dtos/create-course.dto';
 
@@ -8,8 +8,12 @@ export class CourseController {
 
   //* GET ~/api/courses
   @Get()
-  getAllCourses() {
-    return this.courseService.findAll();
+  getAllCourses(
+    @Query('title') title: string,
+    @Query('maxPrice') maxPrice: string,
+    @Query('minPrice') minPrice: string,
+  ) {
+    return this.courseService.findAll(title , maxPrice , minPrice);
   }
 
   //* GET ~/api/courses/:id
